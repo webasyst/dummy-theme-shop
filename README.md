@@ -1,2 +1,3 @@
-# dummy-theme-shop
-Barebones design theme for developers
+# Dummy theme (shop)
+
+Barebones design theme for developers.
