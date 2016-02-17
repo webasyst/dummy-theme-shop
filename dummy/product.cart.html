@@ -129,7 +129,7 @@
                     {/if}
                 {/function}
                 {foreach $product.skus as $sku}
-                    <div {if $sku.id != $product.sku_id}style="display:none"{/if} class="sku-{$sku.id}-stock">
+                    <div {if $sku.id != $product.sku_id}style="display:none"{/if} class="sku-{$sku.id}-stock" data-sku-count="{$sku.count}">
                         {if $sku.stock}
                             {foreach $stocks as $stock_id => $stock}
                                 {if isset($sku.stock[$stock_id])}

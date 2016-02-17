@@ -44,11 +44,21 @@
         {* INIT SLIDER *}
         <script>
             ( function($) {
-                $.getScript("{$wa_active_theme_url}plugins/bxslider/jquery.bxslider.js?v{$wa_theme_version}", function() {
+
+                function initSlider() {
                     $("#bestsellers-slider").bxSlider({
                         auto: true
                     });
-                });
+                }
+
+                if (!$.fn.bxSlider) {
+                    $.getScript("{$wa_active_theme_url}plugins/bxslider/jquery.bxslider.js?v{$wa_theme_version}", function() {
+                        initSlider();
+                    });
+                } else {
+                    initSlider();
+                }
+
             })(jQuery);
         </script>
     </section>

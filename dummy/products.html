@@ -61,6 +61,9 @@
                     <div class="s-offers-wrapper" itemprop="offers" class="offers" itemscope itemtype="http://schema.org/Offer">
                         {if $available}
                             <form class="add-to-cart" {if $product.sku_count > 1}data-url="{$product.frontend_url}{if strpos($product.frontend_url, '?')}&{else}?{/if}cart=1"{/if} method="post" action="{$wa->getUrl('/frontendCart/add')}">
+                        {/if}
+
+                            {if $available}
                                 <div class="s-pricing-wrapper">
                                     <span class="s-price">{shop_currency_html($product.price)}</span>
                                     {if $product.compare_price > 0}
@@ -72,48 +75,51 @@
                                 <link itemprop="availability" href="http://schema.org/InStock" />
                                 <meta itemprop="price" content="{$product.price}">
                                 <meta itemprop="priceCurrency" content="{$wa->shop->primaryCurrency()}">
-                            </form>
-                        {else}
-                            <div class="s-pricing-wrapper">
-                                <span class="s-price">{shop_currency_html($product.price)}</span>
-                            </div>
-
-                            <div class="s-out-of-stock">
-                                <strong>{if $wa->shop->settings('ignore_stock_count')}[`Pre-order only`]{else}[`Out of stock`]{/if}</strong>
-                            </div>
-
-                            <meta itemprop="price" content="{$product.price}">
-                            <meta itemprop="priceCurrency" content="{$wa->shop->primaryCurrency()}">
-                            <link itemprop="availability" href="http://schema.org/OutOfStock" />
-                        {/if}
-
-                        <div class="s-rating-wrapper">
-                            {if $product.rating > 0}
-                                <span class="s-rating-block nowrap">{$wa->shop->ratingHtml($product.rating, 16)}</span>
-                                <span class="s-rating-hint">{$product.rating_count} [`Review's`]</span>
                             {else}
-                                <span class="s-rating-block nowrap">
-                                    <i class="icon16 star-empty"></i>
-                                    <i class="icon16 star-empty"></i>
-                                    <i class="icon16 star-empty"></i>
-                                    <i class="icon16 star-empty"></i>
-                                    <i class="icon16 star-empty"></i>
-                                </span>
-                                <span class="s-rating-hint">No review's</span>
-                            {/if}
-                        </div>
+                                <div class="s-pricing-wrapper">
+                                    <span class="s-price">{shop_currency_html($product.price)}</span>
+                                </div>
 
-                        {if empty($hide_buttons)}
-                            <div class="s-buttons-wrapper">
-                                {if empty($disable_compare)}
-                                    <a class="s-button white s-compare-button" href="javascript:void(0);" data-product="{$product.id}" title="[`Compare`]">
-                                        <i class="icon16 compare {if $wa->shop->inComparison($product.id)}active{/if}"></i>
-                                    </a>
-                                {/if}
-                                {if $available}
-                                    <input class="s-button s-add-button" type="submit" data-added-text="[`Added`]" value="{$add2cart_label}">
+                                <div class="s-out-of-stock">
+                                    <strong>{if $wa->shop->settings('ignore_stock_count')}[`Pre-order only`]{else}[`Out of stock`]{/if}</strong>
+                                </div>
+
+                                <meta itemprop="price" content="{$product.price}">
+                                <meta itemprop="priceCurrency" content="{$wa->shop->primaryCurrency()}">
+                                <link itemprop="availability" href="http://schema.org/OutOfStock" />
+                            {/if}
+
+                            <div class="s-rating-wrapper">
+                                {if $product.rating > 0}
+                                    <span class="s-rating-block nowrap">{$wa->shop->ratingHtml($product.rating, 16)}</span>
+                                    <span class="s-rating-hint">{$product.rating_count} [`Review's`]</span>
+                                {else}
+                                    <span class="s-rating-block nowrap">
+                                        <i class="icon16 star-empty"></i>
+                                        <i class="icon16 star-empty"></i>
+                                        <i class="icon16 star-empty"></i>
+                                        <i class="icon16 star-empty"></i>
+                                        <i class="icon16 star-empty"></i>
+                                    </span>
+                                    <span class="s-rating-hint">No review's</span>
                                 {/if}
                             </div>
+
+                            {if empty($hide_buttons)}
+                                <div class="s-buttons-wrapper">
+                                    {if empty($disable_compare)}
+                                        <a class="s-button white s-compare-button" href="javascript:void(0);" data-product="{$product.id}" title="[`Compare`]">
+                                            <i class="icon16 compare {if $wa->shop->inComparison($product.id)}active{/if}"></i>
+                                        </a>
+                                    {/if}
+                                    {if $available}
+                                        <input class="s-button s-add-button" type="submit" data-added-text="[`Added`]" value="{$add2cart_label}">
+                                    {/if}
+                                </div>
+                            {/if}
+
+                        {if $available}
+                            </form>
                         {/if}
                     </div>
 

@@ -61,14 +61,13 @@
 
     {* Display pages list *}
     {function renderNavItem page=[]}
-        {$_subpages = $wa->shop->pages($page.id)}
         {$_is_selected = ( strlen($page.url) > 1 && $wa->currentUrl()|strstr:$page.url )}
 
-        <li class="{if !empty($_is_selected)}is-selected{/if} {if !empty($_subpages)}has-sub-menu{/if}">
+        <li class="{if !empty($_is_selected)}is-selected{/if} {if !empty($page.childs)}has-sub-menu{/if}">
             <a href="{$page.url}">{$page.name}</a>
-            {if !empty($_subpages)}
+            {if !empty($page.childs)}
                 <ul>
-                    {foreach $_subpages as $subpage}
+                    {foreach $page.childs as $subpage}
                         {renderNavItem page=$subpage}
                     {/foreach}
                 </ul>

@@ -9,6 +9,7 @@ var Product = ( function($) {
         that.add2cart = that.$form.find(".add2cart");
         that.button = that.add2cart.find("input[type=submit]");
         that.$price = that.add2cart.find(".price");
+        that.$quantity = that.$form.find("#product-quantity-field");
 
         // VARS
         that.is_dialog = ( options["is_dialog"] || false );
@@ -30,9 +31,6 @@ var Product = ( function($) {
         var that = this;
 
         //
-        that.initSwipeBox();
-
-        //
         that.bindEvents();
 
         //
@@ -44,12 +42,6 @@ var Product = ( function($) {
             that.$form.find(".skus input:radio:enabled:first").attr('checked', 'checked');
         }
 
-    };
-
-    Product.prototype.initSwipeBox = function() {
-        var that = this;
-        
-        
     };
 
     //
@@ -81,7 +73,7 @@ var Product = ( function($) {
             that.onSkusChange( $(this) );
         });
 
-        that.$form.submit( function () {
+        that.$form.on("submit", function () {
             that.onFormSubmit( $(this) );
             return false;
         });
@@ -90,18 +82,18 @@ var Product = ( function($) {
 
         // Click on "+" button
         that.$form.find(".quantity-wrapper .increase-volume").on("click", function() {
-            that.changeVolume("positive");
+            that.increaseVolume( true );
             return false;
         });
 
         // Click on "-" button
         that.$form.find(".quantity-wrapper .decrease-volume").on("click", function() {
-            that.changeVolume("negative");
+            that.increaseVolume( false );
             return false;
         });
 
         // Change volume field
-        that.$form.find("#product-quantity-field").on("change", function() {
+        that.$quantity.on("change", function() {
             that.prepareChangeVolume( $(this) );
             return false;
         });
@@ -163,10 +155,6 @@ var Product = ( function($) {
         sku = that.features[key];
 
         if (sku) {
-
-            if (sku.image_id) {
-                //$("#product-image-" + sku.image_id).click();
-            }
 
             //
             that.updateSkuServices(sku.id);
@@ -286,20 +274,7 @@ var Product = ( function($) {
             max_val = ( isNaN(input_max_data) || input_max_data === 0 ) ? Infinity : input_max_data,
             new_val;
 
-        // If click "+" button
-        if (type === "positive") {
-            if (that.volume < max_val) {
-                new_val = that.volume + 1;
-            }
-
-        // If click "-" button
-        } else if (type === "negative") {
-            if (that.volume > 1) {
-                new_val = that.volume - 1;
-            }
-
-        // If manual input at field
-        } else if ( type > 0 && type !== that.volume ) {
+        if ( type > 0 && type !== that.volume ) {
             if (current_val <= 0) {
                 if ( that.volume > 1 ) {
                     new_val = 1;
@@ -325,6 +300,24 @@ var Product = ( function($) {
             // Update Price
             that.updatePrice();
         }
+    };
+
+    Product.prototype.increaseVolume = function( type ) {
+        var that = this,
+            new_val;
+
+        // If click "+" button
+        if ( type ) {
+            new_val = that.volume + 1;
+
+        } else {
+            new_val = that.volume - 1;
+        }
+
+        that.$quantity
+            .val(new_val)
+            .trigger("change");
+
     };
 
     // Replace price to site format
@@ -383,12 +376,26 @@ var Product = ( function($) {
     //
     Product.prototype.updateSkuServices = function(sku_id) {
         var that = this,
-            $form = that.$form;
+            $form = that.$form,
+            $skuStock = $form.find(".sku-" + sku_id + "-stock"),
+            sku_count = $skuStock.data("sku-count");
 
-        //
+        if ( !(sku_count && sku_count > 0) ) {
+            sku_count = null;
+        }
+
+        // Hide others
         $form.find("div.s-stocks-wrapper div").hide();
-        //
-        $form.find(".sku-" + sku_id + "-stock").show();
+
+        // Show
+        $skuStock.show();
+
+        that.volume = 1;
+
+        that.$quantity
+            .val(that.volume)
+            .trigger("change")
+            .data("max-quantity", sku_count);
 
         for (var service_id in that.services[sku_id]) {
 
@@ -477,7 +484,8 @@ var Product = ( function($) {
                 service_price = parseFloat( $(this).data('price') );
             }
 
-            price += service_price;
+            price += service_price * that.volume;
+
             if ($compare.length) {
                 compare_price += service_price;
             }
